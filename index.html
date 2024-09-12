@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family:  monospace;
+        }
+        body{
+            height: 100vh;
+            width: 100vw;
+            background: rgb(0, 0, 0);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container{
+            height: 400px;
+            width: 300px;
+        }
+        .xoboard{
+            height: 300px;
+            width: 300px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3px;
+            padding-left: 5px;
+            padding-top: 3px;
+        }
+        .box{
+            width: 95px;
+            height: 95px;
+            background: rgb(0, 0, 0);
+            border-radius: 15px;
+            color: aqua;
+            text-shadow: 0px 0px 5px aqua;
+            text-align: center;
+            line-height: 95px;
+            font-size: 70px;
+            cursor: pointer;
+            border: 5px solid aqua;
+        }
+        .status_dis{
+            width: 300px;
+           color: aqua;
+            height: 50px;
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .player_pro{
+            width: 300px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 15px;
+        }
+        .reset{
+            width: 100px;
+            height: 40px;
+            background: aqua;
+            border-radius: 10px;
+            color: rgb(0, 0, 0);
+            text-align: center;
+            line-height: 40px;
+            text-shadow: 0px 0px 3px aqua;
+            cursor: pointer;
+        }
+        .reset:hover{
+            transform: scale(1.05);
+        }
+        .reset:active{
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="xoboard">
+            <div data-key="0" class="box"></div>
+            <div data-key="1" class="box"></div>
+            <div data-key="2" class="box"></div>
+            <div data-key="3" class="box"></div>
+            <div data-key="4" class="box"></div>
+            <div data-key="5" class="box"></div>
+            <div data-key="6" class="box"></div>
+            <div data-key="7" class="box"></div>
+            <div data-key="8" class="box"></div>
+        </div>
+        <div class="status_dis">
+            <div class="player_pro">Play now</div>
+            <div class="reset">Reset</div>
+        </div>
+        <script>
+            let boxs = document.querySelectorAll(".xoboard .box");
+            let player_pro = document.querySelector(".status_dis .player_pro")
+            let reset = document.querySelector(".status_dis .reset")
+
+            let option = ["","","","","","","","",""];
+            let wins =[
+                [0,1,2],
+                [3,4,5],
+                [6,7,8],
+                [0,3,6],
+                [1,4,7],
+                [2,5,8],
+                [0,4,8],
+                [2,4,6]
+            ];
+            let game_run = false;
+            let current_player = "X";
+            let X = "X";
+            startgame();
+            function startgame(){
+                game_run = true;
+                boxs.forEach(box=>{
+                    box.addEventListener("click",()=>{
+                       
+                        let index = box.attributes[0].value;
+                        if(option[index]!="" || !game_run){
+                            return;
+                        }else{
+                            option[index] = current_player;
+                            box.innerHTML = X;
+                            checkwinner();
+                        }
+                        
+                    })
+                })
+                player_pro.innerHTML = `${current_player} Turn`;
+            }
+
+            function checkwinner(){
+                let gamewon = false;
+                for(let i = 0;i<wins.length;i++){
+                    let condition = wins[i];
+                   
+                    let con1 = option[condition[0]];
+                    let con2 = option[condition[1]];
+                    let con3 = option[condition[2]];
+                   console.log()
+                   if(con1=="" || con2=="" || con3==""){
+                    
+                     continue;
+                    }else{
+                        game_run = true;
+                        gamewon = false;
+                       
+                    }
+                    if(con1=="X" && con2=="X" && con3=="X"){
+                    gamewon = true;
+                    game_run = false;
+                   }
+                   if(con1=="O" && con2=="O" && con3=="O"){
+                    gamewon = true;
+                    game_run = false;
+                   } 
+                }
+                if(gamewon){
+                    player_pro.innerHTML = " win ";
+                    
+                   }else if(!option.includes("")){
+                        player_pro.innerHTML ="Game Ended"
+                        game_run = false;
+                    }else{
+                    changeplayer();
+                   }
+                
+            }
+            function changeplayer(){
+                console.log("arifin")
+                X=(X=="X") ? "O" : "X";
+                current_player=(current_player == "X")? "O" : "X";
+                player_pro.innerHTML = `${current_player} Turn`;
+
+            }
+            reset.addEventListener("click",()=>{
+                option = ["","","","","","","","",""];
+                boxs.forEach(box=>{
+                    box.innerHTML = "";
+                    player_pro.innerHTML = `${current_player} Turn`;
+                    startgame();
+                })
+            })
+        </script>
+    </div>
+</body>
+</html>
